@@ -1,0 +1,187 @@
+{
+  "official_iran_mirrors": [
+    {
+      "name": "Shatel",
+      "url": "https://mirror.shatel.ir",
+      "description": "Ubuntu mirror",
+      "packages": ["Ubuntu", "Debian", "Kali"]
+    },
+    {
+      "name": "Kubar Cloud",
+      "url": "https://mirrors.kubarcloud.com",
+      "description": "Kubar internal mirror with support",
+      "packages": ["Linux Kernel Sources", "Open-Source Archives"]
+    },
+    {
+      "name": "Iran IT Organization",
+      "url": "https://repo-portal.ito.gov.ir/repo",
+      "description": "Maintained by Iran Information Technology Organization",
+      "packages": ["CentOS", "Fedora", "Rocky", "Python", "npm", "Yarn"]
+    },
+    {
+      "name": "Jamko",
+      "url": "https://jamko.ir",
+      "description": "Documentation and config examples",
+      "packages": ["Maven", "Gradle", "Android SDK", "APT", "RPM", "NuGet", "Yarn", "Composer", "pip"]
+    },
+    {
+      "name": "Runflare",
+      "url": "https://runflare.com/mirrors",
+      "description": "Daily auto-updated with simple guides",
+      "packages": ["Composer", "Packagist", "PyPI", "npm", "Node.js"]
+    },
+    {
+      "name": "HamDocker Hub",
+      "url": "https://hub.hamdocker.ir",
+      "description": "Docker registry",
+      "packages": ["Docker Registry"]
+    },
+    {
+      "name": "IUT Mirror",
+      "url": "https://repo.iut.ac.ir",
+      "description": "Comprehensive mirror by Isfahan University of Technology",
+      "packages": ["Debian", "Ubuntu", "Mint", "Arch", "Manjaro", "Alpine", "Rocky", "Fedora", "OpenSUSE", "OpenBSD", "CTAN"]
+    },
+    {
+      "name": "Myket Maven",
+      "url": "https://maven.myket.ir",
+      "description": "Android-focused Maven mirror",
+      "packages": ["Maven Central", "Google Maven", "JitPack"]
+    },
+    {
+      "name": "ArvanCloud Linux Mirrors",
+      "url": "https://www.arvancloud.ir/en/dev/linux-repository",
+      "description": "High-speed mirrors hosted on ArvanCloud",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Alpine", "Arch", "OpenSUSE", "Manjaro"]
+    },
+    {
+      "name": "IranServer",
+      "url": "https://mirror.iranserver.com",
+      "description": "High-speed mirrors by IranServer",
+      "packages": ["Debian", "Ubuntu", "CentOS"]
+    },
+    {
+      "name": "MobinHost Mirror",
+      "url": "https://mirror.mobinhost.com",
+      "description": "Comprehensive GNU/Linux mirrors",
+      "packages": ["FreeBSD", "AlmaLinux", "Alpine", "Arch", "Debian", "EPEL", "Manjaro", "MariaDB", "MongoDB", "Ubuntu", "Zabbix"]
+    },
+    {
+      "name": "Focker",
+      "url": "https://focker.ir",
+      "description": "Docker mirror",
+      "packages": ["Docker Registry"]
+    },
+    {
+      "name": "En-Mirror",
+      "url": "https://en-mirror.ir",
+      "description": "Gradle and Android libraries mirror",
+      "packages": ["Google", "Maven Central", "JitPack"]
+    },
+    {
+      "name": "Terraform Peaker",
+      "url": "https://terraform.peaker.info",
+      "description": "Official Terraform proxy",
+      "packages": ["Terraform"]
+    },
+    {
+      "name": "Afranet",
+      "url": "http://mirror.afranet.com",
+      "description": "GNU/Linux distributions mirror",
+      "packages": ["Debian", "Ubuntu", "CentOS"]
+    },
+    {
+      "name": "Pardisco",
+      "url": "https://mirrors.pardisco.co",
+      "description": "GNU/Linux & programming package mirrors",
+      "packages": ["Ubuntu", "Debian", "Alpine", "PyPI", "NPM", "Go", "NuGet", "Docker", "OmniOS"]
+    },
+    {
+      "name": "CRAN UM",
+      "url": "https://cran.um.ac.ir",
+      "description": "R packages mirror",
+      "packages": ["CRAN"]
+    },
+    {
+      "name": "0-1 Cloud",
+      "url": "https://mirror.0-1.cloud",
+      "description": "Multi-distribution mirror",
+      "packages": ["AlmaLinux", "Alpine", "Arch", "Debian", "Fedora", "FreeBSD", "Ubuntu", "Windows"]
+    },
+    {
+      "name": "AminIDC",
+      "url": "http://mirror.aminidc.com",
+      "description": "GNU/Linux & Windows Server mirrors",
+      "packages": ["Debian", "RHEL", "Rocky", "Ubuntu", "Windows Server"]
+    },
+    {
+      "name": "AtlantisCloud",
+      "url": "https://mirror.atlantiscloud.ir/",
+      "description": "Docker, Ubuntu, and NPM mirrors",
+      "packages": ["Ubuntu", "Docker Registry", "NPM"]
+    },
+    {
+      "name": "ParsDev",
+      "url": "https://mirror.parsdev.com/",
+      "description": "GNU/Linux distributions mirror",
+      "packages": ["Ubuntu", "AlmaLinux", "Debian"]
+    },
+    {
+      "name": "LinuxMirrors",
+      "url": "https://linuxmirrors.ir/",
+      "description": "GNU/Linux distributions mirror",
+      "packages": ["Debian", "Ubuntu", "Fedora", "Rocky", "Oracle Linux"]
+    },
+    {
+      "name": "Hyperclouds",
+      "url": "https://mirrors.hyperclouds.ir/",
+      "description": "Hyperclouds Mirrors",
+      "packages": ["Cargo", "Ubuntu", "Alpine", "Debian", "RubyGems", "Go Proxy", "PyPI", "Docker Registry"]
+    }
+  ],
+  "global_mirrors": [
+    {
+      "name": "NYIST Mirror",
+      "country": "China",
+      "url": "https://mirror.nyist.edu.cn/",
+      "description": "University-operated open-source mirror",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Fedora", "Arch Linux", "Alpine", "openSUSE", "Kali", "Linux Mint", "PyPI", "CRAN", "CPAN", "RubyGems"]
+    },
+    {
+      "name": "NJU Mirror",
+      "country": "China",
+      "url": "https://mirror.nju.edu.cn/",
+      "description": "Nanjing University official mirror site",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Fedora", "Arch Linux", "Alpine", "openSUSE", "Manjaro", "Gentoo", "PyPI"]
+    },
+    {
+      "name": "Huawei Cloud Mirror",
+      "country": "China",
+      "url": "https://mirrors.huaweicloud.com/home",
+      "description": "Enterprise-grade mirror service operated by Huawei Cloud",
+      "packages": ["Debian", "Ubuntu", "CentOS Stream", "Fedora", "Arch Linux", "Alpine", "openEuler", "PyPI", "Maven", "Docker", "Kubernetes"]
+    },
+    {
+      "name": "USTC Mirror",
+      "country": "China",
+      "url": "https://mirrors.ustc.edu.cn/",
+      "description": "University of Science and Technology of China mirror",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Fedora", "Arch Linux", "Alpine", "openSUSE", "Kali", "Manjaro", "PyPI", "CRAN", "Homebrew"]
+    },
+    {
+      "name": "Yandex Mirror",
+      "country": "Russia",
+      "url": "https://mirror.yandex.ru/",
+      "description": "High-speed Russian mirror operated by Yandex",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Fedora", "Arch Linux"]
+    },
+    {
+      "name": "Tsinghua University TUNA",
+      "country": "China",
+      "url": "https://mirrors.tuna.tsinghua.edu.cn/",
+      "description": "Tsinghua University Network Association mirror",
+      "packages": ["Debian", "Ubuntu", "CentOS", "Fedora", "Arch Linux", "Alpine", "openSUSE", "Kali", "Manjaro", "PyPI", "Homebrew", "Docker"]
+    }
+  ]
+}
+
