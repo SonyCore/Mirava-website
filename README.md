@@ -1,4 +1,4 @@
-# 🇮🇷 Mirava — Free Mirrors & Connectivity Dashboard
+# Mirava — Free Mirrors & Connectivity Dashboard
 
 **Mirava** gives you fast, free, and uncensored access to Linux mirrors, programming libraries, and essential tools. Track mirror status in real-time and contribute to keeping the network reliable.
 
