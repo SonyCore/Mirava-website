@@ -68,6 +68,7 @@ const contributors = [
   "amirparsadd",
   "SinaAboutalebi",
   "ehsannarmani",
+  "Vesal-J",
   "Linuxmaster14",
   "imdanieldev",
   "MrAriaNet",
@@ -75,7 +76,6 @@ const contributors = [
   "aliinreallife",
   "alireza5969",
   "sirwanveisi",
-  "Vesal-J",
 ];
 
 const contributorsContainer = document.getElementById("contributors");
