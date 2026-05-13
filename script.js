@@ -1,178 +1,204 @@
-const mirrorContainer = document.getElementById("mirrorCards");
 const toast = document.getElementById("copyToast");
-
-/* LOAD MIRRORS */
-fetch("mirror.json")
-  .then(res => res.json())
-  .then(data => {
-    const allMirrors = [
-      ...data.official_iran_mirrors,
-      ...data.global_mirrors
-    ];
-
-    allMirrors.forEach(m => {
-      const card = document.createElement("div");
-      card.className = "mirror-card glass";
-
-      card.innerHTML = `
-        <h3>${m.name}</h3>
-        <p class="desc">${m.description}</p>
-        <div class="status checking">⏳ Checking status…</div>
-
-        <div class="packages">
-          ${m.packages.map(p => `<span class="package">${p}</span>`).join("")}
-        </div>
-
-        <span class="mirror-link">${m.url}</span>
-      `;
-
-      mirrorContainer.appendChild(card);
-
-      /* COPY URL ON CLICK */
-      card.addEventListener("click", () => {
-        navigator.clipboard.writeText(m.url);
-        showToast();
-      });
-
-      /* STATUS CHECK */
-      const statusEl = card.querySelector(".status");
-      fetch(m.url, { method: "HEAD", mode: "no-cors" })
-        .then(() => {
-          statusEl.textContent = "● Online";
-          statusEl.className = "status up";
-        })
-        .catch(() => {
-          statusEl.textContent = "● Offline";
-          statusEl.className = "status down";
-        });
-    });
-  })
-  .catch(() => {
-    mirrorContainer.innerHTML = "<p>Failed to load mirrors.</p>";
-  });
-
-/* SHOW COPY TOAST */
-function showToast() {
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1500);
-}
-
-
-/* -----------------------------
-   CONTRIBUTORS (STATIC LIST)
---------------------------------*/
-const contributors = [
-    "GeeDook",
-    "ArmanTaheriGhaleTaki",
-    "maede-ps",
-  "amirparsadd",
-  "SinaAboutalebi",
-  "ehsannarmani",
-  "Vesal-J",
-  "Linuxmaster14",
-  "imdanieldev",
-  "MrAriaNet",
-  "hesam-init",
-  "aliinreallife",
-  "alireza5969",
-  "sirwanveisi",
-];
-
-const contributorsContainer = document.getElementById("contributors");
-
-contributors.forEach(username => {
-  const a = document.createElement("a");
-  a.href = `https://github.com/${username}`;
-  a.target = "_blank";
-  a.rel = "noopener";
-
-  const img = document.createElement("img");
-  img.src = `https://github.com/${username}.png`;
-  img.alt = username;
-  img.title = username;
-
-  a.appendChild(img);
-  contributorsContainer.appendChild(a);
-});
-
-
-// radar 
+const mirrorContainer = document.getElementById("mirrorCards");
 const mirrorTableBody = document.querySelector("#mirrorTable tbody");
-// const toast2 = document.getElementById("toast");
-let mirrorData = [];
-let historyMap = {}; // mirror.url => last 20 checks
+const searchInput = document.getElementById("mirrorSearch");
+const totalCountEl = document.getElementById("totalCount");
+const onlineCountEl = document.getElementById("onlineCount");
 
-// Load mirrors
+let mirrorData = [];
+let historyMap = {};
+
+/* ── Single fetch for all data ─────────────────── */
 fetch("mirror.json")
   .then(r => r.json())
   .then(data => {
-    mirrorData = [...data.official_iran_mirrors, ...data.global_mirrors];
-    mirrorData.forEach(m => historyMap[m.url] = []);
+    const iran = data.official_iran_mirrors.map(m => ({ ...m, category: "iran" }));
+    const global = data.global_mirrors.map(m => ({ ...m, category: "global" }));
+    mirrorData = [...iran, ...global];
+    mirrorData.forEach(m => { historyMap[m.url] = []; });
+
+    totalCountEl.textContent = mirrorData.length;
+
+    renderCards(mirrorData);
     renderTable();
-    updateConnectivity();
-    setInterval(updateConnectivity, 15000);
+    renderContributors();
+    checkAllMirrors();
+
+    setInterval(() => {
+      if (!document.hidden) checkAllMirrors();
+    }, 30000);
+  })
+  .catch(() => {
+    mirrorContainer.innerHTML =
+      "<p style='color:var(--danger);padding:1rem 0'>Failed to load mirrors.</p>";
   });
 
-function checkMirror(url, timeout = 4000) {
+/* ── Search / filter ───────────────────────────── */
+searchInput?.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase().trim();
+  const filtered = q
+    ? mirrorData.filter(
+        m =>
+          m.name.toLowerCase().includes(q) ||
+          m.packages.some(p => p.toLowerCase().includes(q))
+      )
+    : mirrorData;
+  renderCards(filtered);
+});
+
+/* ── Render card grid ──────────────────────────── */
+function renderCards(mirrors) {
+  const frag = document.createDocumentFragment();
+  mirrors.forEach(m => {
+    const card = document.createElement("div");
+    card.className = "mirror-card glass";
+    card.dataset.url = m.url;
+
+    card.innerHTML = `
+      <div class="card-header">
+        <h3>${m.name}</h3>
+        <span class="category-badge ${m.category}">${m.category === "iran" ? "Iran" : "Global"}</span>
+      </div>
+      <p class="desc">${m.description}</p>
+      <div class="packages">${m.packages.map(p => `<span class="package">${p}</span>`).join("")}</div>
+      <span class="mirror-link">${m.url}</span>
+      <div class="card-status checking">⏳ Checking…</div>
+    `;
+
+    card.addEventListener("click", () => {
+      navigator.clipboard?.writeText(m.url).catch(() => {});
+      showToast();
+    });
+
+    frag.appendChild(card);
+  });
+
+  mirrorContainer.innerHTML = "";
+  mirrorContainer.appendChild(frag);
+
+  /* Re-apply known status after re-render */
+  mirrors.forEach(m => {
+    const hist = historyMap[m.url];
+    if (hist?.length > 0) updateCardStatus(m.url, hist[hist.length - 1]);
+  });
+}
+
+/* ── Render table rows ─────────────────────────── */
+function renderTable() {
+  const frag = document.createDocumentFragment();
+  mirrorData.forEach(m => {
+    const tr = document.createElement("tr");
+    tr.dataset.url = m.url;
+    tr.innerHTML = `
+      <td><div class="status-history"></div></td>
+      <td class="mirror-name">${m.name}</td>
+      <td><div class="status-circle"><span></span></div></td>
+      <td class="status-text">Checking…</td>
+    `;
+    tr.querySelector(".mirror-name").addEventListener("click", e => {
+      e.stopPropagation();
+      navigator.clipboard?.writeText(m.url).catch(() => {});
+      showToast();
+    });
+    frag.appendChild(tr);
+  });
+  mirrorTableBody.appendChild(frag);
+}
+
+/* ── Single mirror reachability check ─────────── */
+function checkMirror(url, timeout = 5000) {
   return new Promise(resolve => {
     const timer = setTimeout(() => resolve(false), timeout);
-    fetch(url, { mode: "no-cors", cache: "no-store" })
+    fetch(url, { method: "HEAD", mode: "no-cors", cache: "no-store" })
       .then(() => { clearTimeout(timer); resolve(true); })
       .catch(() => { clearTimeout(timer); resolve(false); });
   });
 }
 
-function renderTable() {
-  mirrorTableBody.innerHTML = "";
-  mirrorData.forEach(m => {
-    const tr = document.createElement("tr");
-    tr.dataset.url = m.url;
+/* ── Parallel connectivity checks ─────────────── */
+async function checkAllMirrors() {
+  const results = await Promise.allSettled(mirrorData.map(m => checkMirror(m.url)));
 
-    tr.innerHTML = `
-      <td class="history-cell"></td>
-      <td class="mirror-name">${m.name}</td>
-      <td><div class="status-circle"><span></span></div></td>
-      <td class="status-text">Checking…</td>
-    `;
+  let onlineCount = 0;
+  results.forEach((result, i) => {
+    const isUp = result.status === "fulfilled" && result.value === true;
+    const m = mirrorData[i];
 
-    // Click row or name to copy URL
-    tr.querySelector(".mirror-name").addEventListener("click", e => {
-      navigator.clipboard.writeText(m.url).then(() => {
-               showToast();
+    historyMap[m.url].push(isUp);
+    if (historyMap[m.url].length > 30) historyMap[m.url].shift();
 
-      });
-    });
-
-    mirrorTableBody.appendChild(tr);
+    if (isUp) onlineCount++;
+    updateCardStatus(m.url, isUp);
+    updateTableRow(m.url, isUp);
   });
+
+  onlineCountEl.textContent = onlineCount;
 }
 
-async function updateConnectivity() {
-  for (const mirror of mirrorData) {
-    const result = await checkMirror(mirror.url);
+/* ── DOM update helpers ────────────────────────── */
+function updateCardStatus(url, isUp) {
+  const card = mirrorContainer.querySelector(`.mirror-card[data-url="${url}"]`);
+  if (!card) return;
+  const el = card.querySelector(".card-status");
+  if (!el) return;
+  el.textContent = isUp ? "● Online" : "● Offline";
+  el.className = `card-status ${isUp ? "up" : "down"}`;
+}
 
-    // Update history
-    historyMap[mirror.url].push(result);
-    if (historyMap[mirror.url].length > 30) historyMap[mirror.url].shift(); // extend history
+function updateTableRow(url, isUp) {
+  const tr = mirrorTableBody.querySelector(`tr[data-url="${url}"]`);
+  if (!tr) return;
 
-    // Update row
-    const tr = mirrorTableBody.querySelector(`tr[data-url='${mirror.url}']`);
-    const historyCell = tr.querySelector(".history-cell");
-    const circle = tr.querySelector(".status-circle span");
-    const statusText = tr.querySelector(".status-text");
+  const histCell = tr.querySelector(".status-history");
+  const circle = tr.querySelector(".status-circle span");
+  const statusText = tr.querySelector(".status-text");
 
-    // Render history
-    historyCell.innerHTML = historyMap[mirror.url]
-      .map(r => `<span class="history-dot" data-url="${mirror.url}" style="background-color:${r ? '#4dffb8':'#ff6b6b'}"></span>`)
-      .join("");
+  histCell.innerHTML = historyMap[url]
+    .map(r => `<span class="history-dot" style="background:${r ? "#4dffb8" : "#ff6b6b"}"></span>`)
+    .join("");
 
-    // Update circle
-    circle.style.backgroundColor = result ? "#4dffb8" : "#ff6b6b";
-    circle.style.boxShadow = result
-      ? "0 0 12px rgba(77,255,184,0.8)"
-      : "0 0 12px rgba(255,107,107,0.7)";
+  circle.style.backgroundColor = isUp ? "#4dffb8" : "#ff6b6b";
+  circle.style.boxShadow = isUp
+    ? "0 0 10px rgba(77,255,184,0.8)"
+    : "0 0 10px rgba(255,107,107,0.7)";
 
-    // Status hint
-    statusText.textContent = result ? "Online — reachable" : "Offline — not responding";
-  }
+  statusText.textContent = isUp ? "Online — reachable" : "Offline — not responding";
+}
+
+/* ── Contributors ──────────────────────────────── */
+function renderContributors() {
+  const names = [
+    "GeeDook", "ArmanTaheriGhaleTaki", "maede-ps","SonyCore", "amirparsadd",
+    "SinaAboutalebi", "ehsannarmani", "Vesal-J", "Linuxmaster14",
+    "imdanieldev", "MrAriaNet", "hesam-init", "aliinreallife",
+    "alireza5969", "sirwanveisi", 
+  ];
+
+  const frag = document.createDocumentFragment();
+  names.forEach(username => {
+    const a = document.createElement("a");
+    a.href = `https://github.com/${username}`;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.title = username;
+
+    const img = document.createElement("img");
+    img.src = `https://github.com/${username}.png?size=80`;
+    img.alt = username;
+    img.width = 60;
+    img.height = 60;
+    img.loading = "lazy";
+    img.decoding = "async";
+
+    a.appendChild(img);
+    frag.appendChild(a);
+  });
+
+  document.getElementById("contributorsList").appendChild(frag);
+}
+
+/* ── Toast ─────────────────────────────────────── */
+function showToast() {
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 1800);
 }
